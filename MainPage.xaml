@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Search image content"
+             Loaded="ContentPage_Loaded"
+             x:Class="SIMC.MainPage">
+
+    <Grid RowDefinitions="*,Auto">
+    <ScrollView >
+        <VerticalStackLayout>
+            <Editor Placeholder="Search image content" x:Name="btnKeyword" TextChanged="TxtKeyword_TextChanged"></Editor>
+            <Button Text="SELECT FILE" Clicked="BtnSelectFile_Clicked"></Button>
+            <CollectionView x:Name="ImageGrid"
+                ItemsLayout="VerticalGrid, 4"
+                Margin="10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Spacing="5">
+                            <Image Source="{Binding ImageSource}"
+                       Aspect="AspectFill"
+                       HeightRequest="100"
+                       WidthRequest="100"/>
+                            <Label Text="{Binding Caption}"
+                       LineBreakMode="TailTruncation"
+                       HeightRequest="40"
+                       MaxLines="3"
+                       FontSize="12"
+                       TextColor="Gray"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+        </ScrollView>
+        <Label
+            Grid.Row="1"
+            x:Name="lblStatus"
+            Text=""
+            LineBreakMode="TailTruncation"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            Padding="2"/>
+    </Grid>
+
+</ContentPage>
