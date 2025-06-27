@@ -24,7 +24,7 @@
 		<ApplicationTitle>SIMC</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.simc</ApplicationId>
+		<ApplicationId>mr4.simc</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
