@@ -9,7 +9,15 @@
     <ScrollView >
         <VerticalStackLayout>
             <Editor Placeholder="Search image content" x:Name="btnKeyword" TextChanged="TxtKeyword_TextChanged"></Editor>
-            <Button Text="SELECT FILE" Clicked="BtnSelectFile_Clicked"></Button>
+            <Grid ColumnDefinitions="*,20,*" Margin="0,10,0,10">
+                <Button Text="SELECT FILE"
+                        Grid.Column="0"
+                        Clicked="OnPickPhotoClicked"/>
+                <BoxView WidthRequest="20" Grid.Column="1" BackgroundColor="Transparent" />
+                <Button Text="TAKE A PHOTO"
+                        Grid.Column="2"
+                        Clicked="OnCapturePhotoClicked"/>
+            </Grid>
             <CollectionView x:Name="ImageGrid"
                 ItemsLayout="VerticalGrid, 4"
                 Margin="10">

@@ -1,0 +1,3 @@
+mkdir publish
+mkdir publish/iOS
+dotnet publish -c Release -f net9.0-ios -p:ArchiveOnBuild=true -p:RuntimeIdentifier=ios-arm64 -p:CodesignKey="Apple Distribution: Your Name (TEAM_ID)" -p:CodesignProvision="YourProvisioningProfile"

@@ -44,8 +44,92 @@ Response:
 
 ```
 {
-  "content": "a city is shown in this aerial photo.",
-  "message": "OK",
-  "time": 26.765355348587036
+  "content": "a city is shown in this aerial photo."
 }
+```
+
+```python
+modelImg2Txt = "microsoft/git-base-coco"
+
+processorImg2Txt = AutoProcessor.from_pretrained(
+    modelImg2Txt, cache_dir="cache")
+modelImg2Txt = AutoModelForCausalLM.from_pretrained(
+    modelImg2Txt, cache_dir="cache")
+
+pixel_values = processorImg2Txt(
+    images=image, return_tensors="pt").pixel_values
+generated_ids = modelImg2Txt.generate(
+    pixel_values=pixel_values, max_length=50)
+generated_caption = processorImg2Txt.batch_decode(
+    generated_ids, skip_special_tokens=True)[0]
+```
+
+```shell
+cd Python
+pyinstaller --onefile app.py
+```
+
+# Run
+
+Tuý thuộc vào môi trường cần test, hãy chạy lệnh tương ứng (android, iOS, macos và windows).
+
+```shell
+dotnet build -t:Run -f net9.0-windows10.0.19041.0
+dotnet build -t:Run -f net9.0-android
+dotnet build -t:Run -f net9.0-maccatalyst
+dotnet build -t:Run -f net9.0-ios
+```
+
+# Publish
+
+## Thiết lập môi trường cho iOS
+
+Đối với iOS cần download simc.mobileprovision và cài đặt trước khi thực hiện publish.
+- Truy cập trang: https://developer.apple.com/account/resources/profiles/list
+- Tìm và download simc
+- Double click để cài đặt bằng xCode hoặc copy file vừa download được vào thư mục "~/Library/MobileDevice/Provisioning Profiles/"
+
+## Publish CLI
+
+Tuỳ thuộc vào môi trường cần publish, hãy chạy lệnh tương ứng (android, iOS, macos và windows).
+
+### Đối với android
+
+Cần thực hiện ký cho ứng dụng để đưa lên store.
+
+Tạo keystore
+
+```shell
+keytool -genkeypair -v -keystore simc.keystore -alias simc -keyalg RSA -keysize 2048 -validity 10000
+```
+
+```shell
+sh distribute_android.sh
+```
+
+### Đối với iOS
+
+Cần thực hiện thêm việc upload ipa lên Apple Developer
+
+```shell
+sh distribute_ios.sh
+```
+
+Mở project trên xCode
+
+```shell
+dotnet tool install --global dotnet-xcsync --prerelease
+```
+
+```shell
+xcsync generate --project ./application.csproj --target-framework-moniker net9.0-ios -f
+
+
+```
+
+### Windows và MACOS
+
+```shell
+dotnet publish -c Release -f net9.0-windows10.0.19041.0 -o ./publish/windows
+dotnet publish -c Release -f net9.0-maccatalyst -o ./publish/macos
 ```

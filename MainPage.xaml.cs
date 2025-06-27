@@ -97,7 +97,7 @@ namespace SIMC
                     continue;
                 }
                 UpdateStatusBar($"Getting image content: {imagePath}");
-                Image2TextResponse? image2TextResponse = await SIMC.Services.Image2Text.GetImageContent(imagePath, client);
+                Image2TextResponse? image2TextResponse = await Services.Image2Text.GetImageContent(imagePath, client);
                 if (null != image2TextResponse)
                 {
                     image2TextResponse.file = imagePath;
@@ -121,25 +121,51 @@ namespace SIMC
             await LoadImage();
         }
 
-        private async void BtnSelectFile_Clicked(object sender, EventArgs e)
+        private FileResult? _selectedPhoto;
+        async void OnPickPhotoClicked(object sender, EventArgs e)
         {
-            var results = await FilePicker.Default.PickMultipleAsync(new PickOptions
+            _selectedPhoto = await MediaPicker.Default.PickPhotoAsync();
+            if (_selectedPhoto != null)
             {
-                PickerTitle = "Select images",
-                FileTypes = FilePickerFileType.Images
-            });
-            if (results != null)
+                BtnSelectFile_Clicked(sender, e);
+            }
+        }
+
+        async void OnCapturePhotoClicked(object sender, EventArgs e)
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
             {
-                foreach (var file in results)
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+            if (status == PermissionStatus.Granted)
+            {
+                _selectedPhoto = await MediaPicker.Default.CapturePhotoAsync();
+                if (_selectedPhoto != null)
                 {
-                    await SaveFileWithHashedName(file);
+                    BtnSelectFile_Clicked(sender, e);
                 }
             }
+            else
+            {
+                await DisplayAlert("ERROR", $"許可が拒否されました。", "OK");
+            }
+
+        }
+
+        private async void BtnSelectFile_Clicked(object sender, EventArgs e)
+        {
+            await SaveFileWithHashedName(_selectedPhoto);
             await LoadImage();
         }
 
-        public async Task<string> SaveFileWithHashedName(FileResult file)
+        public async Task<string> SaveFileWithHashedName(FileResult? file)
         {
+            if (null == file)
+            {
+                return string.Empty;
+            }
+
             using var stream = await file.OpenReadAsync();
 
             // Compute SHA256 hash

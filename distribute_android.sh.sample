@@ -1,0 +1,4 @@
+mkdir publish
+mkdir publish/Android
+dotnet publish -f net9.0-android -c Release
+apksigner sign --ks simc.keystore --ks-pass pass:YOUR-PASSWORD --min-sdk-version 24 --out publish/Android/mr4.simc-Signed.aab  bin/Release/net9.0-android/publish/mr4.simc-Signed.aab
